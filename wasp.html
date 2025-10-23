@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<!--
+	Halcyonic by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AutoCarver - Cameron Hatherell</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="subpage">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<section id="header">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+
+								<!-- Logo -->
+									<h1><a href="index.html" id="logo">Cameron Hatherell</a></h1>
+
+								<!-- Nav -->
+									<nav id="nav">
+										<a href="index.html">Homepage</a>
+										<a href="autocarver.html">AutoCarver</a>
+										<a href="wasp.html">WASP</a>
+										<a href="iotvoice.html">IoT Voice Recognition</a>
+										<a href="archive.html">Archive</a>
+									</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Content -->
+				<section id="content">
+					<div class="container">
+						<div class="row">
+							<div class="col-9 col-12-medium">
+
+								<!-- Main Content -->
+									<section>
+									
+										<div id="introduction">
+											<header>
+												<h2>Wireless Autonomous Structural Printer (WASP)</h2>
+												<h3>An aerial platform for structural 3D printing</h3>
+											</header>
+											<p>
+												As part of my university capstone project, I worked within a team of 4 on the development of Structural Additive Manufacturing
+												(SAM) technologies. Current structural printers, like <a href="https://cobod.com/">COBOD</a> are large and cumbersome. We sought
+												to create a more flexible system based on the concept of a foam-printing aerial drone. We believed that applying drones to the
+												problem would result in a less constrained and more scaleable solution. Naturally, however, the added complexity introduces its
+												own set of problems that must be addressed. Thus, project represents an exploration of the feasibility of such a system.
+											</p>
+											<p>
+												Beyond standard safety and legal considerations, in developing our prototype we recognized the following constraints:
+												<ul class="square-list">
+													<li>Solution should be easily transportable, fitting within the bed of a standard F-150 pickup truck</li>
+													<li>Produced structures must be self-supporting</li>
+													<li>Solution must be deconstructable and maintainable</li>
+													<li>Solution must not be limited by mechanical features</li>
+												</ul>
+											</p>
+											<p>
+												In designing this system, I took ownership over software control and simulation.
+											</p>
+										</div>		
+										<div id="highlights">
+											<h3>Technical Highlights</h3>
+											<ul class="square-list">
+												<li>ROS-based software integration</li>
+												<li>PID-tuned flight control</li>
+												<li>SLAM</li>
+												<li>Realtime, onboard processing</li>
+												<li>G-Code interpreter for path definition</li>
+											</ul>
+
+										</div>
+										<div id="hardware">
+											<h3>Hardware</h3>
+											<p>
+												The development of control systems and interfaces depended on several key components:
+											</p>
+											<ul class="square-list">
+												<li>Pixhawk - FCM necessary for interfacing with and controlling electrical actuators</li>
+												<figure>
+													<img src="images/pixhawk.jpg" class="center">
+												</figure> 
+												<li>Intel RealSense D435i Stereoscopic Camera - For environmental perception necessary for self-location and quality assurance</li>
+												<figure>
+													<img src="images/camera.jpg" class="center">
+												</figure> 
+												<li>NVIDIA Jetson Nano - Onboard computer for realtime vision processing</li>
+												<figure>
+													<img src="images/Jetson.png" class="center">
+												</figure> 
+											</ul>
+											
+											
+										</div>
+										<div id="cvision">
+											<h3>Computer Vision</h3>
+											<p>
+												The D435i is an incredibly versatile camera. While it does not necessarily have the greatest resolution, it possesses an internal
+												IMU, an infrared laser array, and two cameras. The pair of cameras allow depth to be derived from comparison between the two images.
+												This function is further reinforned using the infrared laser array. The addition of an IMU
+											</p>
+											<figure>
+												<img src="images/depth.png" class="center">
+												<figcaption  style="text-align: center">A 3D projection of an image from the D435i</figcaption>
+											</figure> 
+											<p>
+												Leveraging the D435i camera, the original intention was to integrate an existing SLAM algorithm for the purposes of pose estimation.
+												In particular, we looked at integrating <a href="https://github.com/introlab/rtabmap">RTAB-Map</a>
+												
+											</p>
+											<figure>
+												<img src="images/rtabmap.png" class="center">
+												<figcaption  style="text-align: center">SLAM results from a loop around a test subject (A pile of firewood)</figcaption>
+											</figure> 
+											<p>
+												Unfortunately, despite dedicating the Jetson to processing, it was not possible to process frames sufficiently quickly; PX4
+												requires a minimum update rate to ensure stability of the drone that was unachievable. Instead, we transitioned to using
+												<a href="https://github.com/KumarRobotics/msckf_vio">MSCKF_VIO</a> a visual inertial odometry system suitable for pose estimation.
+											</p>
+										</div>
+										<div id="architecture">
+											<h3>Architecture</h3>
+											<p>
+												
+											</p>
+										</div>
+										<div id="simulation">
+											<h3>Simulation</h3>
+											<p>
+												
+											</p>
+										</div>
+										<div id="conclusion">
+											<h3>Conclusion</h3>
+											<p>
+												
+											</p>
+										</div>
+										<div id="dependencies">
+											<h3>Dependencies</h3>
+											<p>
+												
+											</p>
+										</div>
+										<div id="glossary">
+											<h3>Glossary</h3>
+											<ul>
+												
+											</ul>
+										</div>
+										<div id="source">
+											<h3>Source Code</h3>
+											<p>
+												Take a look at the source code <a href="https://github.com/Cam-H/DronePrinting">here</a>.
+											</p>
+										</div>
+									</section>
+
+							</div>
+							<div class="col-3 col-12-medium">
+
+								<!-- Sidebar -->
+									<section class="sidenav">
+										<header>
+											<h2>Index</h2>
+										</header>
+										<ul class="link-list">
+											<li><a href="#introduction">Introduction</a></li>
+											<!-- <li><a href="#applications">Introduction</a></li> -->
+											<li><a href="#highlights">Technical Highlights</a></li>
+											<li><a href="#hardware">Hardware</a></li>
+											<li><a href="#cvision">Computer Vision</a></li>
+											<li><a href="#architecture">Architecture</a></li>
+											<li><a href="#simulation">Simulation</a></li>
+											<li><a href="#conclusion">Conclusion</a></li>
+											<li><a href="#dependencies">Dependencies</a></li>
+											<li><a href="#glossary">Glossary</a></li>
+											<li><a href="#source">Source Code</a></li>
+										</ul>
+									</section>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Footer -->
+				<!-- <section id="footer">
+					<div class="container">
+						<h2>Cameron Hatherell</h2>
+							<div>
+								<div class="row">
+									<div class="left">
+										<ul class="link-list last-child">
+											<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+											<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+					</div>
+				</section> -->
+
+			<!-- Copyright -->
+				<!-- <div id="copyright">
+						&copy; Portfolio - Cameron Hatherell. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a>
+				</div> -->
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

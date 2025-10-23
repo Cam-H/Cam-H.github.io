@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<!--
+	Halcyonic by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Archive - Cameron Hatherell</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="subpage">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<section id="header">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<!-- Logo -->
+									<h1><a href="index.html" id="logo">Cameron Hatherell</a></h1>
+
+								<!-- Nav -->
+									<nav id="nav">
+										<a href="index.html">Homepage</a>
+										<a href="autocarver.html">AutoCarver</a>
+										<a href="wasp.html">WASP</a>
+										<a href="iotvoice.html">IoT Voice Recognition</a>
+										<a href="archive.html">Archive</a>
+									</nav>
+							</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Content -->
+				<section id="content">
+					<div class="container">
+						<div class="col-6">
+
+							<!-- Main Content -->
+									<section>
+										<header>
+											<h2>Archive</h2>
+											<h3>A selection of old projects</h3>
+										</header>
+										<p>
+											I have been programming ever since participating in a particularly interesting high school
+											course. While I initially began working with Java, I later developed competencies in other 
+											languages as I became interested in different platforms. I have learnt PHP, HTML, CSS, and SQL
+											to experiment with web development. I have also studied JCL, SAS, COBOL, Ladder Logic, and more for various internships.
+											Nowadays, I work primarily with C++ and MATLAB (for modelling) so I recommend checking out <a href="autocarver.html" class="internal-link">AutoCarver</a>, my most recent project.
+										</p>
+										<p>
+											Still here? Then perhaps you might take a look at some of these older projects?
+										</p>
+									</section>
+
+							<div class="col-3">
+
+								<!-- Left Sidebar -->
+								 	<section>
+										<header>
+											<h2><a href="https://github.com/Cam-H/SYR.git">SYR</a> - An exploration into game engine development</h2>
+										</header>
+										<p>
+											I got started working with C++ in working through the tutorial series developed by <a href="https://www.youtube.com/@TheCherno">TheCherno</a>.
+											<figure>
+												<iframe class="center" width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=j_tsUZ-ycTXaazke&amp;list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+											</figure>
+										</p>
+										<p>
+											I developed this project with the intent to understand how game engines work through the experience of an experienced game engine developer.
+											While I eventually moved on to other projects, this represented by initial introduction to several important technologies and techniques:
+										</p>
+										<ul class="square-list">
+											<li>Using <a href="https://www.opengl.org/">OpenGL</a> to interface with the GPU</li>
+											<li>Utilizing <a href="https://en.wikipedia.org/wiki/OpenGL_Shading_Language">GLSL</a> to produce shaders for diffuse and specular lighting</li>
+											<li>Application of stencil testing for cell shading and other features</li>
+											<li>Applying <a href="https://freetype.org/">FreeType</a> in the rendering of text</li>
+											<li>Direct manipulation of meshes, and in particular how to develop custom mesh file loaders</li>
+											<li>Use of entity component systems (ECS) like <a href="https://github.com/skypjack/entt">entt</a>, a more efficient alternative to standard inheritance</li>
+										</ul>
+										<p>
+											Although I did not end up developing SYR for a specific purpose, the understanding developed was critical for later projects like <a href="autocarver.html" class="internal-link">AutoCarver</a>.
+										</p>
+										<figure>
+											<img src="images/SYR.PNG" class="center">
+											<figcaption style="text-align: center">A test scene rendered with SYR</figcaption>
+										</figure> 
+										
+									</section>
+									<section>
+										<header>
+											<h2><a href="https://www.firstinspires.org/programs/frc/">FIRST Robotics</a></h2>
+										</header>
+										<p>
+											I participated in my school's FIRST robotics team, acting as the programming lead in my senior year. I later went on to
+											mentor the team after graduating.
+										</p>
+										<figure>
+											<img src="images/5870 Robot.jpg" class="center">
+											<figcaption style="text-align: center">Team robot for 2019's game: Destination: Deep Space</figcaption>
+										</figure> 
+									</section>
+									<section>
+										<header>
+											<h2><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's Game of Life</a></h2>
+										</header>
+										<p>
+											Based on the cellular automata developed by <a href="https://en.wikipedia.org/wiki/John_Horton_Conway">John Horton Conway</a>. A set
+											of simple rules give rise to rather interesting effects in a grid-based map. In each generation cells are treated with the following rules:
+										</p>
+										<ol class="number-list">
+											<li>Any live cell with < 2 neighbors dies</li>
+											<li>Any live cell with 2 or 3 cells survives</li>
+											<li>Any live cell with > 3 neighbors dies</li>
+											<li>Any dead cell with exactly 3 neighbors becomes live</li>
+										</ol>
+										<figure>
+											<img src="images/JConway.PNG" class="center">
+											<figcaption style="text-align: center">A self-sustaining pattern. <a href="https://conwaylife.appspot.com/library/">See more</a></figcaption>
+										</figure>
+										<p>
+											My implementation of this classic game is <a href="https://github.com/Cam-H/Graphics">here</a>
+										</p>
+									</section>
+									<section>
+										<header>
+											<h2>Pacman</h2>
+										</header>
+										<p>
+											Developed in Java, I took my first foray into AI through a custom implementation of the classic game.
+										</p>
+										<figure>
+											<img src="images/Pacman.JPG" class="center">
+											<figcaption style="text-align: center"></figcaption>
+										</figure>
+									</section>
+							</div>
+					</div>
+				</section>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
