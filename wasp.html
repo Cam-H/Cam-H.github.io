@@ -55,10 +55,10 @@
 												(SAM) technologies. Current structural printers, like <a href="https://cobod.com/">COBOD</a> are large and cumbersome. We sought
 												to create a more flexible system based on the concept of a foam-printing aerial drone. We believed that applying drones to the
 												problem would result in a less constrained and more scaleable solution. Naturally, however, the added complexity introduces its
-												own set of problems that must be addressed. Thus, project represents an exploration of the feasibility of such a system.
+												own set of problems that must be addressed. This project represents an exploration of the feasibility of such a system.
 											</p>
 											<p>
-												Beyond standard safety and legal considerations, in developing our prototype we recognized the following constraints:
+												Beyond standard safety and legal considerations, we recognized the following constraints when developing our prototype:
 												<ul class="square-list">
 													<li>Solution should be easily transportable, fitting within the bed of a standard F-150 pickup truck</li>
 													<li>Produced structures must be self-supporting</li>
@@ -99,7 +99,7 @@
 												<figure>
 													<img src="images/Jetson.png" class="center">
 												</figure> 
-												<li><a href="https://pixhawk.org/">Pixhawk</a> 2.4.8 - FCM necessary for interfacing with and controlling electrical actuators</li>
+												<li><a href="https://pixhawk.org/">Pixhawk</a> 2.4.8 - FCM necessary for interfacing with and controlling electronic actuators</li>
 												<figure>
 													<img src="images/pixhawk.jpg" class="center">
 												</figure> 
@@ -145,7 +145,7 @@
 										<div id="architecture">
 											<h3>Architecture</h3>
 											<p>
-												The WASP project is divided into two physical systems. The 'ground station,' running on the user's laptop acts as the interface to control the drones. A 3D slicer or other
+												The WASP project is divided into two physical systems. There are the WASP drones, as well as the 'ground station,' running on the user's laptop and acting as the master control. A 3D slicer or other
 												planner is intended to run on the ground station to develop missions for the drones. These missions may then be communicated to drones through a wireless router. Onboard,
 												the drone is composed of a D435i camera for sensing, the Jetson Nano for processing, and the Pixhawk to interface and control with hardware; this hardware, includes:
 												6 motors and propellers, a lithium polymer battery, a few manual buttons, a GPS, and more.
@@ -159,19 +159,18 @@
 												intended to run roscore, acting as a master for all inter-node communications. Instantiating the ground station will simultaneously launch a mission_server node which can 
 												read pre-sliced G-Code files which define the build path; PrusaSlicer was used for this purpose, creating a process that is nearly identical to that which is used 
 												for 3D printers. The role of the mission_server is to receive mission requests by individual WASP drones. The server will generate an appropriate mission based on 
-												the requested flight time which is then returned to the drone. Overall, the mission_server is intended to synchronize the actions of multiple drones between print operations.
+												the several criteria and will then provide a mission to the drone. Overall, the mission_server is intended to synchronize the actions of multiple drones between print operations.
 											</p>
 										</div>
 										<div id="simulation">
 											<h3>Simulation</h3>
 											<p>
 												PX4 provides functionality called software in the loop (<a href="https://docs.px4.io/main/en/simulation/">SITL</a>). SITL closely mimics the physical hardware, 
-												simulating the response of the Pixhawk to arbitrary inputs. Gazebo is used to simulate the physical system, thereby generating inputs to SITL. ROS provides an 
+												simulating the response of the Pixhawk to arbitrary inputs. <a href="https://gazebosim.org/home">Gazebo</a> classic is used to simulate a proxy of the physical system, thereby generating inputs to SITL. ROS provides an 
 												interface to these components, and facilitates integration of third-party functions. This integration enables offline testing of control logic, prediction of 
-												flight characteristics, and reduces the risk of accidental damage to expensive components come real-world implementation. The addition of <a href="https://gazebosim.org/home">Gazebo</a> classic physics simulation 
-												software creates a realistic proxy for the physical system. The simulated MAVLink communications, as pictured below, are identical to the physical system so 
-												modifications will not need to be made to adapt the physical system. This simulation is used to validate control logic, safeties, and communications between the 
-												various subsystems.
+												flight characteristics, and reduces the risk of accidental damage to expensive components come real-world implementation. The simulated MAVLink communications, as pictured below, 
+												are identical to the physical system so modifications need not need to be made to adapt the physical system. This simulation is used to validate control logic, safeties, and 
+												communications between the various subsystems.
 											</p>
 											<figure>
 												<img src="images/mav.png" class="center">
@@ -198,7 +197,7 @@
 													<li>Path deviation tolerance</li>
 													<li>Environmental conditions like wind speed and temperature</li>
 												</ul>
-												In simulating, it was possible to demonstrate the impact these parameters and more had on the quality of deposition. For example, the path the drone follows
+												In simulating, it was possible to demonstrate the impact these parameters had on the quality of deposition. For example, the path the drone follows
 												is based on a series of waypoints; travel is directed towards the next waypoint until a minimum 'acceptance radius' is reached at which point the drone proceeds
 												to the following waypoint. The following show how changing this 'acceptance radius' impacts the quality in outlining a orange square.
 											</p>
@@ -227,8 +226,8 @@
 										<div id="challenges">
 											<h3>Challenges</h3>
 											<p>
-												As the mechanical design was completed, the drone printed and assembled, we transition to controls testing. Unfortunately, we ran into several problems
-												which made it impossible to fully test the drone in the time remaining. Between damage to frame elements that required repair, to an impact damaging
+												As the mechanical design was completed, and the drone was then printed and assembled, we transitioned to controls testing. Unfortunately, we ran into several problems
+												which made it impossible to fully test the drone in the time remaining for the project. Between damage to frame elements that required repair, to an impact damaging
 												a motor for which we had no immediate replacement, our ambitions went unrealized.
 											</p>
 											<figure>
@@ -237,7 +236,7 @@
 											</figure>
 											<p>
 												In retrospect, our team was overly ambitious. We sought to pack too much functionality into the drone, increasing drone weight so much so that any collision
-												would cause catastrophic damage to components. Elements to protect the Jetson Nano and the D435i camera only increased the weight. At the same time, the drone
+												would cause catastrophic damage to components. Guards to protect the Jetson Nano and the D435i camera only increased the weight. At the same time, the drone
 												was so heavy that our flight-to-lift ratio was only 1.4, making it hard for the PID controller to stabilize the drone for lack of power.
 											</p>
 										</div>
@@ -246,11 +245,11 @@
 											<p>
 												While we did not manage to reach our goal, this project offered greater insight into the engineering design process. Given the chance to iterate on the project
 												I recognize the constraint that the 'solution workspace must not be limited mechanically' is unachievable given available hardware. This restriction necessitated
-												that localization be handled onboard with downstream impacts. Specifically, it required an onboard camera and microcontroller which itself required dedicated
+												that localization be handled onboard with severe downstream impacts. Specifically, it required an onboard camera and microcontroller which itself required dedicated
 												protections to avoid damage and a corresponding increase in mass. The frame was bulkier than needed for the same reason.
 												
 												Loosening this constraint, perhaps by using a ground-based vision system for localization would make the technology more realistic. This would facilitate a significant
-												reduction in mass allowing the drone to also be more controllable.
+												reduction in mass allowing the drone to also be more controllable, more efficient, and less vulnerable to impacts.
 											</p>
 										</div>
 										<div id="dependencies">
@@ -299,7 +298,6 @@
 										</header>
 										<ul class="link-list">
 											<li><a href="#introduction">Introduction</a></li>
-											<!-- <li><a href="#applications">Introduction</a></li> -->
 											<li><a href="#highlights">Technical Highlights</a></li>
 											<li><a href="#hardware">Hardware</a></li>
 											<li><a href="#cvision">Computer Vision</a></li>

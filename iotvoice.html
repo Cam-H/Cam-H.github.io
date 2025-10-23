@@ -96,7 +96,7 @@
 											<h3>Training</h3>
 											<p>
 												<a href="#matlab" class="glossary-link">MATLAB</a> was used to train the convolutional neural network. Google offers a <a href="https://research.google/blog/launching-the-speech-commands-dataset/">dataset</a> for
-												speech training which was used for this project. Given a set of 30 words, the neural network was trained for thousands of iterations.
+												speech training which was used for this project. Given a set of 30 words, the neural network was trained over thousands of iterations.
 												After training, the network was able to correctly identify approximately 80% of the words.
 											</p>
 											<figure >
@@ -128,7 +128,7 @@
 											</figure>
 											<p>
 												In testing, it became clear that the embedded device was insufficiently powerful to process audio signals in real time. Between upsampling to match trained data, to 
-												applying the discrete Fourier Transform to develop a spectrogram, to evaluating with the neural network, individual words took seconds to process a piece. A button
+												applying the discrete Fourier Transform to develop a spectrogram, to evaluating with the neural network, individual words took seconds to process at a time. A button
 												was required to limit the window for testing, and the system did perform well despite the slowness.
 											</p>
 										</div>
@@ -136,18 +136,18 @@
 											<h3>Conclusions</h3>
 											<p>
 												In its current iteration, the major limiting factor for this project is an unacceptably slow processing speed. Accuracy could also be improved, as only approximately
-												80% of interpretations are actually correct; this tested under optimal conditions with clear speaking and minimal noise, the real-world performance is likely even worse.
+												80% of interpretations are actually correct; considering this was tested under optimal conditions with clear speaking and minimal noise, the real-world performance is likely even worse.
 												These two problems are intrinsically linked as a bigger network would require more processing power but would result in more accurate interpretations. A larger network
 												may also be trained with more words and larger datasets that might reduce cases of false positives. For further development, possible avenues might be to:
 
 												<ul class="square-list">
-													<li>Continue testing parameters when constructing the network to find a more efficient configuration</li>
+													<li>Continue testing different parameters when constructing the network to find a more efficient configuration</li>
 													<li>Research audio feature extraction to select more appropriate signal features for training</li>
 													<li>Quantize the neural network to decrease memory usage and processor cycles dedicated to floating-point math</li>
 													<li>Match sampling rates between training data and the microphone signal by default</li>
 													<li>Utilize a more appropriate microcontroller that better meets speed and power requirements</li>
 													<li>Integrate an <a href="https://mythic.ai/products/m1076-analog-matrix-processor/">analog matrix processor</a> to handle the signal classification, significantly reducing the load on the microcontroller</li>
-													<li>Perform noise testing using the final product to estimate the effect of different room acoustics and environmental factors that could obfuscate the input signal</li>
+													<li>Perform noise testing using the final product to estimate the effect of different room acoustics and environmental factors that could obfuscate the input signal. Integrate noise reduction filters based on the result</li>
 												</ul>
 											</p>
 										</div>
