@@ -63,21 +63,25 @@
 													<li>Solution should be easily transportable, fitting within the bed of a standard F-150 pickup truck</li>
 													<li>Produced structures must be self-supporting</li>
 													<li>Solution must be deconstructable and maintainable</li>
-													<li>Solution must not be limited by mechanical features</li>
+													<li>Solution workspace must not be limited mechanically</li>
 												</ul>
 											</p>
 											<p>
 												In designing this system, I took ownership over software control and simulation.
 											</p>
+											<figure>
+												<img src="images/WASP.png" class="center">
+												<figcaption  style="text-align: center">A render of the designed drone</figcaption>
+											</figure> 
 										</div>		
 										<div id="highlights">
 											<h3>Technical Highlights</h3>
 											<ul class="square-list">
-												<li>ROS-based software integration</li>
-												<li>PID-tuned flight control</li>
-												<li>SLAM</li>
+												<li><a href="#ros" class="glossary-link">ROS</a>-based software integration</li>
+												<li><a href="#pid" class="glossary-link">PID</a>-tuned flight control</li>
+												<li><a href="#slam" class="glossary-link">SLAM</a> integration</li>
 												<li>Realtime, onboard processing</li>
-												<li>G-Code interpreter for path definition</li>
+												<li><a href="#gcode" class="glossary-link">G-code</a> interpreter for path definition</li>
 											</ul>
 
 										</div>
@@ -87,17 +91,25 @@
 												The development of control systems and interfaces depended on several key components:
 											</p>
 											<ul class="square-list">
-												<li>Pixhawk - FCM necessary for interfacing with and controlling electrical actuators</li>
-												<figure>
-													<img src="images/pixhawk.jpg" class="center">
-												</figure> 
-												<li>Intel RealSense D435i Stereoscopic Camera - For environmental perception necessary for self-location and quality assurance</li>
+												<li><a href="https://realsenseai.com/stereo-depth-cameras/depth-camera-d435i/">Intel RealSense D435i Stereoscopic Camera</a> - For environmental perception necessary for self-location and quality assurance</li>
 												<figure>
 													<img src="images/camera.jpg" class="center">
 												</figure> 
-												<li>NVIDIA Jetson Nano - Onboard computer for realtime vision processing</li>
+												<li><a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/product-development/">NVIDIA Jetson Nano</a> - Onboard computer for realtime vision processing</li>
 												<figure>
 													<img src="images/Jetson.png" class="center">
+												</figure> 
+												<li><a href="https://pixhawk.org/">Pixhawk</a> 2.4.8 - FCM necessary for interfacing with and controlling electrical actuators</li>
+												<figure>
+													<img src="images/pixhawk.jpg" class="center">
+												</figure> 
+												<li><a href="https://www.bestbuy.ca/en-ca/product/tp-link-wireless-ac1200-dual-band-wi-fi-5-mesh-range-extender-re315/15453691">TP-Link Wireless AC1200 Router</a> - Wireless communication (Ground Station -> Jetson Nano)</li>
+												<figure>
+													<img src="images/router.jpg" class="center">
+												</figure> 
+												<li><a href="https://www.tp-link.com/ca/home-networking/adapter/">TP-Link Wireless Adapter</a> - Wireless communication (Jetson Nano -> Ground Station)</li>
+												<figure>
+													<img src="images/adapter.jpg" class="center">
 												</figure> 
 											</ul>
 											
@@ -107,8 +119,9 @@
 											<h3>Computer Vision</h3>
 											<p>
 												The D435i is an incredibly versatile camera. While it does not necessarily have the greatest resolution, it possesses an internal
-												IMU, an infrared laser array, and two cameras. The pair of cameras allow depth to be derived from comparison between the two images.
-												This function is further reinforned using the infrared laser array. The addition of an IMU
+												<a href="#imu" class="glossary-link">IMU</a>, an infrared laser array, two cameras for depth perception, and a third RGB camera. The pair of cameras allow depth to be derived 
+												from comparison between the two images. This function is further reinforned using the infrared laser array. The addition of an IMU provides
+												orientation and acceleration information useful in locating the camera.
 											</p>
 											<figure>
 												<img src="images/depth.png" class="center">
@@ -124,7 +137,7 @@
 												<figcaption  style="text-align: center">SLAM results from a loop around a test subject (A pile of firewood)</figcaption>
 											</figure> 
 											<p>
-												Unfortunately, despite dedicating the Jetson to processing, it was not possible to process frames sufficiently quickly; PX4
+												Unfortunately, despite dedicating the Jetson to processing, it was not possible to process frames sufficiently quickly; <a href="#px4" class="glossary-link">PX4</a>
 												requires a minimum update rate to ensure stability of the drone that was unachievable. Instead, we transitioned to using
 												<a href="https://github.com/KumarRobotics/msckf_vio">MSCKF_VIO</a> a visual inertial odometry system suitable for pose estimation.
 											</p>
@@ -132,31 +145,140 @@
 										<div id="architecture">
 											<h3>Architecture</h3>
 											<p>
-												
+												The WASP project is divided into two physical systems. The 'ground station,' running on the user's laptop acts as the interface to control the drones. A 3D slicer or other
+												planner is intended to run on the ground station to develop missions for the drones. These missions may then be communicated to drones through a wireless router. Onboard,
+												the drone is composed of a D435i camera for sensing, the Jetson Nano for processing, and the Pixhawk to interface and control with hardware; this hardware, includes:
+												6 motors and propellers, a lithium polymer battery, a few manual buttons, a GPS, and more.
+											</p>
+											<figure>
+												<img src="images/architecture.png" class="center">
+												<figcaption  style="text-align: center">System architecture</figcaption>
+											</figure> 
+											<p>
+												The decision to utilize ROS defined the overall network architecture of the system. The system is broadly composed of three separate ROS nodes. The ground station is 
+												intended to run roscore, acting as a master for all inter-node communications. Instantiating the ground station will simultaneously launch a mission_server node which can 
+												read pre-sliced G-Code files which define the build path; PrusaSlicer was used for this purpose, creating a process that is nearly identical to that which is used 
+												for 3D printers. The role of the mission_server is to receive mission requests by individual WASP drones. The server will generate an appropriate mission based on 
+												the requested flight time which is then returned to the drone. Overall, the mission_server is intended to synchronize the actions of multiple drones between print operations.
 											</p>
 										</div>
 										<div id="simulation">
 											<h3>Simulation</h3>
 											<p>
-												
+												PX4 provides functionality called software in the loop (<a href="https://docs.px4.io/main/en/simulation/">SITL</a>). SITL closely mimics the physical hardware, 
+												simulating the response of the Pixhawk to arbitrary inputs. Gazebo is used to simulate the physical system, thereby generating inputs to SITL. ROS provides an 
+												interface to these components, and facilitates integration of third-party functions. This integration enables offline testing of control logic, prediction of 
+												flight characteristics, and reduces the risk of accidental damage to expensive components come real-world implementation. The addition of <a href="https://gazebosim.org/home">Gazebo</a> classic physics simulation 
+												software creates a realistic proxy for the physical system. The simulated MAVLink communications, as pictured below, are identical to the physical system so 
+												modifications will not need to be made to adapt the physical system. This simulation is used to validate control logic, safeties, and communications between the 
+												various subsystems.
+											</p>
+											<figure>
+												<img src="images/mav.png" class="center">
+												<figcaption  style="text-align: center">MAVLink communications interface</figcaption>
+											</figure>
+											<p>
+												Several different functions were tested via simulation. Most fundamentally, the flight dynamics of the drone were evaluated via simulation.
+												Observing how the mass of the drone and the length of the arms impacted flight performance informed the mechanical design. This simulation was applied
+												to develop initial PID gains before beginning test flights with the real drone.
+											</p>
+											<p>
+												I would also highlight simulation of the quality of material deposition. For testing, a simple gazebo plugin was created
+												to emit particles to emulate the foam release in reality. In an ideal case, it might look something like this:
+											</p>
+											<figure>
+												<img src="images/build.GIF" class="center">
+												<figcaption  style="text-align: center">Model material deposition</figcaption>
+											</figure>
+											<p>
+												Deposition of material is dependent on many different factors including:
+												<ul class="square-list">
+													<li>Nozzle distance from surface</li>
+													<li>Drone flight stability</li>
+													<li>Path deviation tolerance</li>
+													<li>Environmental conditions like wind speed and temperature</li>
+												</ul>
+												In simulating, it was possible to demonstrate the impact these parameters and more had on the quality of deposition. For example, the path the drone follows
+												is based on a series of waypoints; travel is directed towards the next waypoint until a minimum 'acceptance radius' is reached at which point the drone proceeds
+												to the following waypoint. The following show how changing this 'acceptance radius' impacts the quality in outlining a orange square.
+											</p>
+											<figure>
+												<img src="images/SQ - Default.png" class="center">
+												<figcaption  style="text-align: center">Impact of varying print speed from 0.1ms (left) to 2ms (right) given default acceptance radius</figcaption>
+											</figure>
+											<figure>
+												<img src="images/SQ - Adaptive.png" class="center">
+												<figcaption  style="text-align: center">Results of implementation of adaptive acceptance radius based on print speed</figcaption>
+											</figure>
+											<p>
+												In the first case, these simulations demonstrate how overly large acceptance radii cause corners to be cut, which is somewhat offset by the inertia of the drone.
+												On the other hand, dynamically adjusting these radii in response to current velocity results in better tracking of the path. Unfortunately, this introduces a new
+												issue in that tighter tolerances frequently cause the drone to overshoot, requiring backtracking that creates the artefacts observable in the second case. Ultimately,
+												balancing these parameters requires careful tuning, and intricate control of the extrusion system to prevent deposition when off of the target.
+											</p>
+											<p>
+												The performance of the localization system was also tested in simulation.
+											</p>
+											<figure>
+												<img src="images/fly.GIF" class="center">
+												<figcaption  style="text-align: center">Drone flight & camera output (black and white represent depth)</figcaption>
+											</figure>
+										</div>
+										<div id="challenges">
+											<h3>Challenges</h3>
+											<p>
+												As the mechanical design was completed, the drone printed and assembled, we transition to controls testing. Unfortunately, we ran into several problems
+												which made it impossible to fully test the drone in the time remaining. Between damage to frame elements that required repair, to an impact damaging
+												a motor for which we had no immediate replacement, our ambitions went unrealized.
+											</p>
+											<figure>
+												<img src="images/oops.PNG" class="center">
+												<figcaption  style="text-align: center">Arms destroyed due to the power of the propellers</figcaption>
+											</figure>
+											<p>
+												In retrospect, our team was overly ambitious. We sought to pack too much functionality into the drone, increasing drone weight so much so that any collision
+												would cause catastrophic damage to components. Elements to protect the Jetson Nano and the D435i camera only increased the weight. At the same time, the drone
+												was so heavy that our flight-to-lift ratio was only 1.4, making it hard for the PID controller to stabilize the drone for lack of power.
 											</p>
 										</div>
 										<div id="conclusion">
 											<h3>Conclusion</h3>
 											<p>
+												While we did not manage to reach our goal, this project offered greater insight into the engineering design process. Given the chance to iterate on the project
+												I recognize the constraint that the 'solution workspace must not be limited mechanically' is unachievable given available hardware. This restriction necessitated
+												that localization be handled onboard with downstream impacts. Specifically, it required an onboard camera and microcontroller which itself required dedicated
+												protections to avoid damage and a corresponding increase in mass. The frame was bulkier than needed for the same reason.
 												
+												Loosening this constraint, perhaps by using a ground-based vision system for localization would make the technology more realistic. This would facilitate a significant
+												reduction in mass allowing the drone to also be more controllable.
 											</p>
 										</div>
 										<div id="dependencies">
 											<h3>Dependencies</h3>
 											<p>
-												
+												<ul>
+													<li><a href="https://gazebosim.org/home">Gazebo</a> - 3D physics simulation to validate drone flight</li>
+													<li><a href="https://www.mathworks.com/products/matlab.html">MATLAB</a> - A bit of modeling early in the design process</li>
+													<li><a href="https://mavlink.io/en/">MAVLink</a> - Used to communicate between the Pixhawk and the Jetson Nano (and QGroundControl for manual control)</li>
+													<li><a href="https://github.com/KumarRobotics/msckf_vio">MSCKF_VIO</a> - Visual intertial odometry for localization</li>
+													<li><a href="https://px4.io/">PX4</a> - Drone autopilot firmware running on the Pixhawk</li>
+													<li><a href="https://github.com/issaiass/realsense2_description">realsense2_description</a> - ROS package to support camera simulation</li>
+													<li><a href="https://github.com/pal-robotics/realsense_gazebo_plugin.git">realsense_gazebo_plugin</a> - ROS package to support camera simulation</li>
+													<li><a href="https://www.ros.org/">ROS</a> - Custom components developed as ROS nodes to integrate with existing libraries</li>
+													<li><a href="https://qgroundcontrol.com/">QGroundControl</a> - Manual flight control and reporting for testing purposes</li>
+												</ul>
 											</p>
 										</div>
 										<div id="glossary">
 											<h3>Glossary</h3>
 											<ul>
-												
+												<li id="gcode"><a href="https://en.wikipedia.org/wiki/G-code">G-code</a> - A programming language used to control automated machines like 3D printers</li>
+												<li id="imu"><a href="https://en.wikipedia.org/wiki/Inertial_measurement_unit">IMU</a> - Inertial Measurement Units are electronic devices to measure force and angular rate using accelerometers and gyroscopes</li>
+												<li id="pid"><a href="https://en.wikipedia.org/wiki/Proportional-integral-derivative_controller">PID</a> - Proportional-integral-derivative controllers is a widely used feedback-based control mechanism
+												applied in a broad range of situations. PID controls are tuned by applying gains to the input signal and the derivative and the integrand thereof to affect the output</li>
+												<li id="px4"><a href="https://px4.io/">PX4</a> - An open source autopilot platform for drone development</li>
+												<li id="ros"><a href="https://www.ros.org/">ROS</a> - Robot Operating System is an open source set of software libraries and tools for robot applications</li>
+												<li id="slam"><a href="https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping">SLAM</a> - Simultaneous Localization and Mapping algorithms seek to develop maps of unknown environments while tracking the agent's position therein</li>
 											</ul>
 										</div>
 										<div id="source">
@@ -183,6 +305,7 @@
 											<li><a href="#cvision">Computer Vision</a></li>
 											<li><a href="#architecture">Architecture</a></li>
 											<li><a href="#simulation">Simulation</a></li>
+											<li><a href="#challenges">Challenges</a></li>
 											<li><a href="#conclusion">Conclusion</a></li>
 											<li><a href="#dependencies">Dependencies</a></li>
 											<li><a href="#glossary">Glossary</a></li>
