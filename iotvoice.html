@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>AutoCarver - Cameron Hatherell</title>
+		<title>IoT Voice - Cameron Hatherell</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -47,212 +47,149 @@
 									
 										<div id="introduction">
 											<header>
-												<h2>Auto Carver</h2>
-												<h3>An automated sculpting tool</h3>
+												<h2>IoT Voice Recognition</h2>
+												<h3>A less invasive, offline alternative</h3>
 											</header>
 											<p>
-												Auto Carver, developed in C++, is intended to automatically create toolpaths for use in subtractive 
-												manufacturing. Inspired by artists like <a href="https://www.youtube.com/@woodartvietnam3723/featured">Woodart Vietnam</a>,
-												the goal is to enable an articulated wrist robotic arm to perform similar tasks.
+												Existing technologies like <a href="https://en.wikipedia.org/wiki/Amazon_Alexa">Amazon Alexa</a> act as effective virtual home assistants.
+												However, given the requirement to always be connected to the cloud, such systems necessarily introduce a vector for hackers to invade a 
+												user's privacy; that is assuming the company is not already using data collected for their own purposes such as marketing or AI training.
+												This project seeks to address that issue, developing an entirely offline voice recognition system that may run on an embedded system. In this
+												project, any processing is done onboard, and the idea would be to integrate into lighting and other home systems for control in an actual implementation.
 											</p>
-											<p>
-												In essence, this program takes a 3D mesh file, like a .obj or a .stl, as input and processes it. Specifically, it:
-												<ol class="number-list">
-													<li>Scales and arranges the model to maximize use of a defined stock material</li>
-													<li>Identifies effective cuts through an iterative refinement process</li>
-													<li>Verifies accessibility of operations given the robot and tooling</li>
-													<li>Performs path planning to connect disjoint operations into a continuous path</li>
-													<li>Translates sequence into a format like GCode for application on real hardware (Not yet developed)</li>
-												</ol>
-											</p>
-											<p>
-												In its current iteration, the 'workspace' consists of the robot affixed with a model chainsaw (blade),
-												a turntable to provide greater range of access, and the stock input material from which the sculpture is carved.
-												Functionality to carve the convex hull and the silhouette of the model has been developed. Further
-												refinement based on the features of the model is planned. The process is represented
-												below using a test model of a teddy bear.
-											</p>
-
-											<div style="text-align: center;">
-												<iframe width="560" height="315" src="https://www.youtube.com/embed/6sPHi9McNTU?si=sNoIVipvClxh8UM9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-											<iframe width="560" height="315" src="https://www.youtube.com/embed/YHSk1_2BcEI?si=-w3DJuwdsHkL6xPZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-											</div>
+											
 										</div>		
 										<div id="highlights">
 											<h3>Technical Highlights</h3>
 											<ul class="square-list">
-												<li><a href="#qt" class="glossary-link">Qt</a>-based user interfaces</li>
-												<li><a href="#opengl" class="glossary-link">OpenGL</a>-based 3D rendering</li>
-												<li>Image processing</li>
-												<li>Iterative convex hull  approximation</li>
-												<li>2D/3D collision detection</li>
-												<li>Contact physics simulation</li>
-												<li>6-<a href="#dof" class="glossary-link">DOF</a> robot kinematics</li>
-												<li>Trajectory generation, including <a href="#topp" class="glossary-link">TOPP</a></li>
-												<li><a href="#rrt" class="glossary-link">RRT</a>-based path resolution</li>
-												<li>Real-time simulation & estimation</li>
-												<li><a href="#kerf" class="glossary-link">Kerf</a> simulation</li>
-												<li>Data serialization</li>
+												<li>Digital signal processing applied to audio iputs</li>
+												<li>Image processing with an artificial neural network</li>
+												<li>Hardware integration with ARM Cortex A-9, DE10-Standard development board</li>
 											</ul>
 
 										</div>
-										<div id="ctrim">
-											<h3>Convex Trim</h3>
+										<div id="background">
+											<h3>Background</h3>
 											<p>
-												The convex hull of the input model is calculated simply with <a href="#quickhull" class="glossary-link">Quickhull</a>.
-												To trim the stock material to more closely approximate the model, each face on the hull is taken and intersected with the stock.
-												Through an iterative process, faces are sorted such that the maximum volume is removed with each cut.
-												The planes of these faces are then fed into a simple path planner to direct the robot through the workspace to perform cuts.
-											</p>
-											<p>
-												To ensure that the profiles in the next step accurately reflect reality, an additional step is taken to trim the silhouettes in a similar way.
-											</p>
-										</div>
-										<div id="strim">
-											<h3>Silhouette Refinement</h3>
-											<p>
-												Identifying cuts and developing the silhouette is comparatively more difficult. To begin, an image of the model is taken from
-												the desired perspective. This image is passed through a series of image processing algorithms to develop an approximate contour
-												of the silhouette. The convex hull of the contour is then calculated and vertices are matched to differentiate between internal
-												and external vertices.
-											</p>
-											<figure>
-												<img src="images/Ortho.PNG" class="center">
-												<figcaption  style="text-align: center">Contour approximation process</figcaption>
-											</figure> 
-											<p>
-												Concave regions are then identified based on sets of continuous internal vertices, and the resulting regions are further subdivided
-												through a triangulation algorithm. These triangles represent the region that needs to be cut, and must be cut individually in sequence
-												to provide adequate space for further operations. Accessibility is tested by comparing clearance to the blades dimensions; if a cut is
-												impossible with a direct cut, reliefs may be used if an angle can be found that enables access.
-											</p>
-											<figure>
-												<img src="images/Triangulation.PNG" class="center">
-												<figcaption style="text-align: center">Triangular sectioning + relief</figcaption>
-											</figure> 
-											
-											<p>
-												Given the endpoints for a given triangular cut, the transition between edges and the approach path is planned using an
-												<a href="#rrt" class="glossary-link">RRT planner</a>. To reduce runtime, the problem is
-												reduced to 2D, leveraging the existing profile so that the configuration space need only be 3 dimensions (x, y, rotation).
-												In this way, the cross-section of the blade is directed from which the actual robot joints values may be calculated easily.
-											</p>
-											<figure>
-												<img src="images/RRTPlan.PNG" class="center">
-												<figcaption style="text-align: center">Tree visualization for an RRT plan (x, y) + rotation (blue/black)</figcaption>
-											</figure> 
-											
-											<p>
-												As cuts are performed, the stock is split into further convex hulls, each time removing material that intersects with the
-												next triangular region. In this way, the convex approximation of the model, mirroring a real sculpture, is gradually improved
-												with successive operations.
-											</p>
-											<p>
-												Any number of silhouettes may be taken from any arbitrary perspective, although each subsequent silhouette results in
-												progressively less refinement. Performing refinements at 90dg intervals seems more than adequate. 
-											</p>
-										</div>
-										<div id="simulation">
-											<h3>Simulation</h3>
-											<p>
-												The simulation provides the means to visualize results and to verify that the positions prepared by the planners do in fact avoid
-												collisions with the workspace while making accurate cuts. Functions are also provided to develop trajectories according to endpoints
-												and joint velocity and acceleration limits. In particular, cartesian trajectories are widely used to provide linear motions between poses;
-												<a href="#topp" class="glossary-link">TOPP</a> is applied for these trajectories to develop reasonable velocity profiles. The amount of time required to perform the sculpting
-												process may then be estimated directly from the trajectories.
-											</p>
-											<p>
-												During simulation, it is useful to track the effect of the blade on the sculpture. To this end, 'debris' that would be generated from
-												cuts is further processed in real-time. As the blade moves, material is removed accordingly through a very simple boolean operation.
-												By further tracking contact with the sculpture itself, the simulation knows when to 'release,' or rather delete debris when segments are
-												no longer supported. The simulated <a href="#kerf" class="glossary-link">kerf</a> thus accurately reflects what one would see if they were to perform the cuts in reality.
+												Processing audio signals is a challenging task with an entire dedicated field of study. In the field, the <a href="#ft" class="glossary-link">Fourier Transform</a> is a 
+												fundamental function to extract frequency and magnitude information from a signal. Applying the function repeatedly over time on
+												an input signal, a <a href="#spectro" class="glossary-link">spectrogram</a> may be developed. A spectrogram is a visual representation of the frequencies and their magnitudes
+												over time.
 											</p>
 											<figure >
-												<img src="images/Kerf.PNG" class="center">
-												<figcaption style="text-align: center">The kerf during a simulated relief</figcaption>
-											</figure> 
-											
+												<a href="https://www.researchgate.net/publication/319081627_An_Algorithm_for_Detection_of_Breath_Sounds_in_Spontaneous_Speech_with_Application_to_Speaker_Recognition">
+													<img src="images/spectrogram.png" class="center">
+												</a>
+												<figcaption style="text-align: center">An example spectrogram (frequency magnitude denoted by colour)</figcaption>
+											</figure>
+											<p>
+												Human speech, when converted into a spectrogram, is rather unique. Different words are composed of different frequencies at different magnitudes
+												which are observable visually as distinct features. A <a href="#cnn" class="glossary-link">convolutional neural network</a> may be applied to spectrograms, then, to recognize these features
+												and thereby infer the words that were originally spoken and recorded.
+											</p>
+											<p>
+												Given a trained neural network, hardware integration is fairly straightforward. With just a microphone for audio recording and an embedded
+												system for processing, a primitive voice recognition system is realized. 
+											</p>
 										</div>
-										<div id="future">
-											<h3>Future Development</h3>
+										<div id="training">
+											<h3>Training</h3>
 											<p>
-												The process of convex trimming followed by silhouette refinement naturally results in the creation of a collection
-												of convex hulls that approximate the input model. Such an approximation is represented below:
+												<a href="#matlab" class="glossary-link">MATLAB</a> was used to train the convolutional neural network. Google offers a <a href="https://research.google/blog/launching-the-speech-commands-dataset/">dataset</a> for
+												speech training which was used for this project. Given a set of 30 words, the neural network was trained for thousands of iterations.
+												After training, the network was able to correctly identify approximately 80% of the words.
 											</p>
-											<figure>
-												<img src="images/FeatureReady.PNG" class="center">
-												<figcaption style="text-align: center">Resultant convex approximation. Hulls are uniquely coloured</figcaption>
-											</figure> 
-											
-											<p>
-												The intention is to use this collection to spacially partition the triangulation of the model. Subsequent cuts will be
-												performed in a similar way to the initial convex trim, but using the model triangles directly. Identifying paths towards
-												operations, however, will require a more comprehensive path planning algorithm than <a href="#rrt" class="glossary-link">RRT*</a> like <a href="#dstar" class="glossary-link">D*</a>.
-											</p>
-											<p>
-												A detailed breakdown of priorities is enumerated <a href="https://github.com/Cam-H/AutoCarver.git">here</a>.
-											</p>
+											<figure >
+												<img src="images/training.png" class="center">
+												<figcaption style="text-align: center">Network training results</figcaption>
+											</figure>
 										</div>
 										<div id="testing">
 											<h3>Testing</h3>
 											<p>
-												Balancing development time dedicated to developing testing tools against time spent debugging the program itself was a significant
-												challenge. Several programs were developed to independently test key features. The interfaces are:
-												<ul  class="square-list">
-													<li>collision - Testing 3D collisions between arbitrary convex hulls</li>
-													<li>convex-hull - Visualization of the iterative process used by Quickhull to develop 3D convex hulls</li>
-													<li>convex-slice - Simulates contact physics of debris released from the sculpture</li>
-													<li>mesh-carve-process - Interface to control simulation & planning parameters and visualize the simulation</li>
-													<li>octree - An experiment in spatial partioning (Not actually applied in favor of KD-trees)</li>
-													<li>ortho - Visualization for the image processing actions during silhouette refinement</li>
-													<li>polygon - Simple visualization and editing tools for polygons</li>
-													<li>raycast - Testing mousepicking</li>
-													<li>robot-motion - Testing robot kinematics and trajectory generation</li>
-													<li>soperator - Testing and visualizing paths for silhouette refinement</li>
-													<li>topp - Testing the TOPP algorithm for use in trajectory generation</li>
+												MATLAB Coder offers functionality to auto-generate C code based on scripts developed in MATLAB. This feature was leveraged to export the trained neural
+												network such that it could be built and deployed to an embedded system. With the addition of a basic microphone, and a bit of extra C code for integration,
+												the system was made to run on appropriate hardware.
+											</p>
+											<p>
+												For the purposes of testing, the integrated 7-segment display was used to report what words were detected by the device.
+											</p>
+											<figure >
+												<img src="images/off.jpg" class="center">
+												<figcaption style="text-align: center">Key word: 'off' response</figcaption>
+											</figure>
+											<figure >
+												<img src="images/on.jpg" class="center">
+												<figcaption style="text-align: center">Key word: 'on' response</figcaption>
+											</figure>
+											<figure >
+												<img src="images/marvin.jpg" class="center">
+												<figcaption style="text-align: center">Key word: 'Marvin' response</figcaption>
+											</figure>
+											<p>
+												In testing, it became clear that the embedded device was insufficiently powerful to process audio signals in real time. Between upsampling to match trained data, to 
+												applying the discrete Fourier Transform to develop a spectrogram, to evaluating with the neural network, individual words took seconds to process a piece. A button
+												was required to limit the window for testing, and the system did perform well despite the slowness.
+											</p>
+										</div>
+										<div id="conclusion">
+											<h3>Conclusions</h3>
+											<p>
+												In its current iteration, the major limiting factor for this project is an unacceptably slow processing speed. Accuracy could also be improved, as only approximately
+												80% of interpretations are actually correct; this tested under optimal conditions with clear speaking and minimal noise, the real-world performance is likely even worse.
+												These two problems are intrinsically linked as a bigger network would require more processing power but would result in more accurate interpretations. A larger network
+												may also be trained with more words and larger datasets that might reduce cases of false positives. For further development, possible avenues might be to:
+
+												<ul class="square-list">
+													<li>Continue testing parameters when constructing the network to find a more efficient configuration</li>
+													<li>Research audio feature extraction to select more appropriate signal features for training</li>
+													<li>Quantize the neural network to decrease memory usage and processor cycles dedicated to floating-point math</li>
+													<li>Match sampling rates between training data and the microphone signal by default</li>
+													<li>Utilize a more appropriate microcontroller that better meets speed and power requirements</li>
+													<li>Integrate an <a href="https://mythic.ai/products/m1076-analog-matrix-processor/">analog matrix processor</a> to handle the signal classification, significantly reducing the load on the microcontroller</li>
+													<li>Perform noise testing using the final product to estimate the effect of different room acoustics and environmental factors that could obfuscate the input signal</li>
 												</ul>
 											</p>
 										</div>
 										<div id="dependencies">
 											<h3>Dependencies</h3>
 											<p>
-												As an exploration into the topic, the vast majority of the program is developed from scratch. Beyond developing operating sequencing,
-												robotic kinematics, collision detection, contact physics, rendering, trajectory generation, path planning, and state serialization
-												were all developed independently. I intend to leverage this fact in the optimization of computationally expensive path planning
-												operations, particularly for feature refinement. Certain core functions, however, are provided by:
+												A suite of MATLAB toolboxes were used in the development of the network:
 												<ul>
-													<li><a href="https://github.com/assimp/assimp.git">Assimp</a> - Acts as a generic interface for loading new model files</li>
-													<li><a href="https://github.com/artem-ogre/CDT.git">CDT</a> - Performs constrained Delauney triangulation critical for certain operations</li>
-													<li><a href="https://github.com/g-truc/glm.git">GLM</a> - Vector math library</li>
-													<li><a href="https://github.com/jlblancoc/nanoflann.git">Nanoflann</a> - Utilizes KD-trees to rapidly identify neighboring vertices. Used to find nearby poses for robotic path planning</li>
-													<li><a href="https://github.com/qt">Qt</a> - Used to develop user interfaces and provides the OpenGL handle for 3D rendering</li>
+													<li><a href="https://www.mathworks.com/products/signal.html">Signal Processing Toolbox</a> &
+														<a href="https://www.mathworks.com/products/dsp-system.html">DSP System Toolbox</a>  - For standard signal processing functions</li>
+													<li><a href="https://www.mathworks.com/products/audio.html">Audio Toolbox</a> - For dedicated audio feature extraction functions</li>
+													<li><a href="https://www.mathworks.com/help/deeplearning">Deep Learning Toolbox</a> - To develop and train the convolutional neural network</li>
+													<li><a href="https://www.mathworks.com/products/matlab-coder.html">MATLAB Coder</a> - To export the network to a C program</li>
 												</ul>
 											</p>
 											<p>
-												For the purposes of understanding certain algorithms before their implementation, I would specially note:
-												<ul>
-													<li> <a href="https://www.r-5.org/files/books/computers/algo-list/realtime-3d/Christer_Ericson-Real-Time_Collision_Detection-EN.pdf">Real Time Collision Detection</a> - For basic collision detection algorithms for different primitive shapes</li>
-													<li><a href="https://caseymuratori.com/blog_0003">Casey Muratori</a> - For insight into the logic and implementation of GJK and EPA</li>
-													<li><a href="https://allenchou.net/game-physics-series/">Ming-Lun "Allen" Chou</a> - For his explanation of contact physics simulation</li>
+												As mentioned, an existing <a href="https://research.google/blog/launching-the-speech-commands-dataset/">dataset</a> was used as input to train the network.
+											</p>
+											<p>
+												In terms of hardware, the following electronics were used for testing:
+												<ul class="square-list">
+													<li><a href="https://en.wikipedia.org/wiki/ARM_Cortex-A9">ARM Cortex-A9</a> - Multi-core processor used for testing purposes</li>
+													<li><a href="https://www.terasic.com.tw/cgi-bin/page/archive.pl?Language=English&CategoryNo=165&No=1081">DE10-Standard Development board</a> - FPGA board used for testing</li>
+													<li>Earbuds with a built in microphone to record audio</li>
 												</ul>
 											</p>
 										</div>
 										<div id="glossary">
 											<h3>Glossary</h3>
 											<ul>
-												<li id="chull"><a href="https://en.wikipedia.org/wiki/Convex_hull">Convex Hull</a> - The smallest convex shape that wraps a body or set of vertices</li>
-												<li id="dof">DOF - Degrees Of Freedom, the number of simple joints in a robot</li>
-												<li id="dstar"><a href="https://en.wikipedia.org/wiki/D*">D*</a> - A more advanced, wave-based path planning algorithm for dynamic environments</li>
-												<li id="epa"><a href="https://dyn4j.org/2010/05/epa-expanding-polytope-algorithm/">EPA</a> - The Expanding Polytope Algorithm - Consumes a GJK simplex to calculate penetration for a collision</li>
-												<li id="gcode"><a href="https://en.wikipedia.org/wiki/G-code">G-code</a> - A programming language used to control automated machines like 3D printers</li>
-												<li id="gjk"><a href="https://en.wikipedia.org/wiki/Gilbert%E2%80%93Johnson%E2%80%93Keerthi_distance_algorithm">GJK</a> - The Gilbert-Johnson-Keerthi algorithm is a widely used method for identifying collisions between convex shapes</li>
-												<li id="kerf">Kerf - A slit made by cutting with a saw</li>
-												<li id="opengl"><a href="https://www.opengl.org/">OpenGL</a> - A popular cross-platform API for rendering 2D and 3D vector graphics</li>
-												<li id="qt"><a href="https://www.qt.io/">Qt</a> - A software framework with a host of features for C++</li>
-												<li id="quickhull"><a href="https://en.wikipedia.org/wiki/Quickhull">Quickhull</a> - An algorithm to rapidly find the convex hull of vertex sets using a divide and conquer strategy</li>
-												<li id="rrt"><a href="https://en.wikipedia.org/wiki/Rapidly_exploring_random_tree">RRT*</a> - Rapidly-exploring Random Trees are designed to incrementally search arbitrary dimensional spaces through random sampling. Modified to asymptotically converge to the optimal path</li>
-												<li id="topp">TOPP - Time Optimal Path Parameterization is a method to find the fastest way to traverse a path in the configuration space of a robot</li>
+												<li id="cnn"><a href="https://en.wikipedia.org/wiki/Convolutional_neural_network">Convolutional Neural Network</a> - A class of feedforward (Input -> Output) neural network and the standard for use in image processing </li>
+												<li id="ft"><a href="https://en.wikipedia.org/wiki/Fourier_transform">Fourier Transform</a> - A function that extracts frequency and magnitude information from a given input signal. See also: <a href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform">DFT</a> and <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform">FFT</a></a></li>
+												<li id="matlab"><a href="https://www.mathworks.com/products/matlab.html">MATLAB</a> - A programming platform widely used in engineering</li>
+												<li id="spectro"><a href="https://en.wikipedia.org/wiki/Spectrogram">Spectrogram</a> - A visual representation of the frequency spectrum over time</li>
+												<li id="upsample"><a href="https://en.wikipedia.org/wiki/Upsampling">Upsampling</a> - The process of increasing datapoints in a signal by interpolation. Useful for comparison against signals sampled at higher rates</li>
 											</ul>
+										</div>
+										<div id="source">
+											<h3>Source Code</h3>
+											<p>
+												Take a look at the source code <a href="https://github.com/Cam-H/IoTVoice">here</a>.
+											</p>
 										</div>
 
 									</section>
@@ -269,13 +206,13 @@
 											<li><a href="#introduction">Introduction</a></li>
 											<!-- <li><a href="#applications">Introduction</a></li> -->
 											<li><a href="#highlights">Technical Highlights</a></li>
-											<li><a href="#ctrim">Planning - Convex Trim</a></li>
-											<li><a href="#strim">Planning - Silhouette Refinement</a></li>
-											<li><a href="#simulation">Simulation</a></li>
-											<li><a href="#future">Future Development</a></li>
+											<li><a href="#background">Background</a></li>
+											<li><a href="#training">Training</a></li>
 											<li><a href="#testing">Testing</a></li>
+											<li><a href="#conclusion">Conclusions</a></li>
 											<li><a href="#dependencies">Dependencies</a></li>
 											<li><a href="#glossary">Glossary</a></li>
+											<li><a href="#source">Source Code</a></li>
 										</ul>
 									</section>
 							</div>
